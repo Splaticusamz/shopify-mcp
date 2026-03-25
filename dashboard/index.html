@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>shopify-mcp — Dashboard</title>
+<style>
+  :root{--bg:#0a0a0f;--card:#12121a;--border:#1e1e2e;--accent:#6366f1;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--cyan:#06b6d4;--text:#e0e0e0;--muted:#8888aa;--mono:"JetBrains Mono","Fira Code",monospace}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+  .wrap{max-width:960px;margin:0 auto;padding:32px 20px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+  h1{font-size:28px;font-weight:800}h2{font-size:18px;font-weight:700;margin-bottom:16px}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+  .badge-yellow{background:#eab30822;color:var(--yellow);border:1px solid #eab30844}
+  .badge-green{background:#22c55e22;color:var(--green);border:1px solid #22c55e44}
+  .badge-muted{background:#8888aa22;color:var(--muted);border:1px solid #8888aa44}
+  .bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;position:relative}
+  .bar-fill{height:100%;border-radius:4px;transition:width .3s}
+  pre{background:#080810;padding:16px;border-radius:8px;font-size:13px;line-height:1.6;overflow-x:auto;white-space:pre;font-family:var(--mono);color:var(--muted)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border)}
+  td{padding:10px 0;border-bottom:1px solid var(--border)}
+  .mono{font-family:var(--mono);color:var(--cyan)}
+  .center{text-align:center}
+  .circle{width:80px;height:80px;border-radius:50%;border:4px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--accent)}
+  .stat-card{text-align:center;padding:16px}
+  .stat-icon{font-size:28px}.stat-label{font-size:12px;color:var(--muted);margin-top:4px}.stat-val{font-size:20px;font-weight:700;margin-top:4px}.stat-sub{font-size:11px;color:var(--muted)}
+  .rev-box{text-align:center;padding:12px;background:#080810;border-radius:8px}
+  .rev-mrr{font-size:20px;font-weight:800;color:var(--green)}.rev-label{font-size:12px;color:var(--muted)}
+  .milestone{display:flex;align-items:flex-start;margin-bottom:16px;position:relative;padding-left:28px}
+  .dot{position:absolute;left:0;top:2px;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff}
+  .dot-done{background:var(--green);border:2px solid var(--green)}.dot-pending{background:var(--border);border:2px solid var(--muted)}
+  .line{position:absolute;left:5px;top:18px;width:2px;height:28px;background:var(--border)}
+  .ms-date{font-size:12px;color:var(--muted);margin-right:8px}
+  .ms-done{color:var(--green)}
+  .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:12px}
+  .header-right{text-align:right}
+  .footer{text-align:center;margin-top:32px;color:var(--muted);font-size:12px}
+  .flex-bar{display:flex;align-items:center;gap:16px}
+  .pct-label{font-size:13px;display:flex;justify-content:space-between;margin-bottom:4px}
+  .pct-val{color:var(--accent);font-weight:700}
+  .tool-row{display:flex;align-items:center;gap:8px}
+  .tool-pct{font-size:12px;color:var(--muted);width:32px;text-align:right}
+  .rev-stats{display:flex;gap:20px;font-size:13px;margin-top:16px}
+  @media(max-width:700px){.grid2,.grid4,.grid5{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <h1>🛍️ shopify-mcp <span style="color:var(--accent)">dashboard</span></h1>
+    <p style="color:var(--muted);font-size:14px;margin-top:6px">MCP Server for Shopify Store Analytics</p>
+  </div>
+  <div class="header-right">
+    <span class="badge badge-yellow">🔨 Building</span>
+    <p style="color:var(--muted);font-size:12px;margin-top:6px" id="ts"></p>
+  </div>
+</div>
+
+<!-- Overall Progress -->
+<div class="card">
+  <h2>📊 Overall Progress</h2>
+  <div class="flex-bar">
+    <div style="flex:1">
+      <div class="pct-label"><span>MVP Completion</span><span class="pct-val">18%</span></div>
+      <div class="bar"><div class="bar-fill" style="width:18%;background:var(--accent)"></div></div>
+    </div>
+    <div class="circle">18%</div>
+  </div>
+</div>
+
+<!-- Architecture + Automation -->
+<div class="grid2">
+  <div class="card">
+    <h2>🏗️ How It Works</h2>
+    <pre>┌─────────────────────────────────────┐
+│         AI Agent (Claude, etc.)     │
+│    "Show me my top products"        │
+└──────────────┬──────────────────────┘
+               │ MCP Protocol
+               ▼
+┌─────────────────────────────────────┐
+│       shopify-mcp server            │
+│  ┌──────┐ ┌──────┐ ┌────────────┐  │
+│  │ prod │ │ ord  │ │ inv │ anal │  │
+│  └──┬───┘ └──┬───┘ └──┬─┘ └─┬──┘  │
+│     └────────┴────────┴──────┘     │
+│            GraphQL Client           │
+└──────────────┬──────────────────────┘
+               │ HTTPS
+               ▼
+┌─────────────────────────────────────┐
+│     Shopify Admin API (GraphQL)     │
+│     Store data, orders, products    │
+└─────────────────────────────────────┘</pre>
+  </div>
+  <div class="card">
+    <h2>⚡ Automation Flow</h2>
+    <pre>┌──────────────┐
+│  npm install  │
+│  or hosted    │
+└──────┬───────┘
+       ▼
+┌──────────────┐     ┌────────────┐
+│ Config API   │────▶│ Auth with  │
+│ key + store  │     │ Shopify    │
+└──────────────┘     └─────┬──────┘
+                           ▼
+                  ┌────────────────┐
+                  │  MCP Tools     │
+                  │  Available     │
+                  └────────┬───────┘
+                           ▼
+              ┌────────────────────┐
+              │  AI queries data   │
+              │  via natural lang  │
+              └────────────────────┘
+
+     FREE: Self-host (npm)
+     PAID: Hosted SSE ($19/mo)
+       ▶ No setup needed
+       ▶ Dashboard included</pre>
+  </div>
+</div>
+
+<!-- Dev Tracker -->
+<div class="card">
+  <h2>🔧 Development Status — Tool Implementation</h2>
+  <table>
+    <thead><tr><th>Tool</th><th>Status</th><th style="width:45%">Progress</th></tr></thead>
+    <tbody id="tools"></tbody>
+  </table>
+</div>
+
+<!-- Revenue Timeline -->
+<div class="card">
+  <h2>💰 Revenue Projection</h2>
+  <div class="grid5" id="revenue"></div>
+  <div class="rev-stats">
+    <div>🎯 <strong style="color:var(--green)">Break-even:</strong> ~May 2026 (8+ paid users)</div>
+    <div>📈 <strong style="color:var(--cyan)">Target:</strong> $1,900/mo MRR by Aug 2026</div>
+  </div>
+</div>
+
+<!-- Milestones -->
+<div class="card">
+  <h2>🗺️ Milestones</h2>
+  <div id="milestones"></div>
+</div>
+
+<!-- Stats -->
+<div class="grid4" id="stats"></div>
+
+<div class="footer">shopify-mcp internal dashboard · not for public distribution · <span id="ts2"></span></div>
+</div>
+
+<script>
+const now = new Date().toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'});
+document.getElementById('ts').textContent='Updated: '+now;
+document.getElementById('ts2').textContent=now;
+
+const tools=[
+  {name:'get_products',status:'scaffold',pct:15},
+  {name:'get_orders',status:'scaffold',pct:15},
+  {name:'get_inventory',status:'scaffold',pct:10},
+  {name:'get_analytics',status:'scaffold',pct:10},
+  {name:'get_customers',status:'scaffold',pct:10},
+];
+const tb=document.getElementById('tools');
+tools.forEach(t=>{
+  const cls=t.pct>=100?'badge-green':t.pct>50?'badge-yellow':'badge-muted';
+  const col=t.pct>=100?'var(--green)':t.pct>50?'var(--yellow)':'var(--accent)';
+  tb.innerHTML+=`<tr><td class="mono">${t.name}</td><td><span class="badge ${cls}">${t.status}</span></td><td><div class="tool-row"><div class="bar" style="flex:1"><div class="bar-fill" style="width:${t.pct}%;background:${col}"></div></div><span class="tool-pct">${t.pct}%</span></div></td></tr>`;
+});
+
+const rev=[{m:'Apr',f:50,p:2,mrr:38},{m:'May',f:150,p:8,mrr:152},{m:'Jun',f:400,p:25,mrr:475},{m:'Jul',f:800,p:55,mrr:1045},{m:'Aug',f:1200,p:100,mrr:1900}];
+const rd=document.getElementById('revenue');
+rev.forEach(r=>{rd.innerHTML+=`<div class="rev-box"><div class="rev-label">${r.m} 2026</div><div class="rev-mrr">$${r.mrr}</div><div class="rev-label">MRR</div><div style="margin-top:8px;font-size:11px"><span style="color:var(--cyan)">${r.f}</span> free · <span style="color:var(--green)">${r.p}</span> paid</div></div>`;});
+
+const ms=[
+  {date:'Mar 25',label:'Infrastructure ✅',done:true},
+  {date:'Mar 26',label:'Core tools (products, orders, inventory)',done:false},
+  {date:'Mar 27',label:'Analytics & customers tools',done:false},
+  {date:'Mar 28',label:'npm publish + LobeHub listing',done:false},
+  {date:'Apr 1',label:'Hosted SSE endpoint (paid tier)',done:false},
+  {date:'Apr 7',label:'First paying customer target 🎯',done:false},
+];
+const md=document.getElementById('milestones');
+ms.forEach((m,i)=>{
+  md.innerHTML+=`<div class="milestone"><div class="dot ${m.done?'dot-done':'dot-pending'}">${m.done?'✓':''}</div>${i<ms.length-1?'<div class="line"></div>':''}<div><span class="ms-date">${m.date}</span><span class="${m.done?'ms-done':''}">${m.label}</span></div></div>`;
+});
+
+const stats=[
+  {icon:'📦',label:'Lines of Code',val:'~25',sub:'TypeScript'},
+  {icon:'🔗',label:'GitHub',val:'1',sub:'commit'},
+  {icon:'📡',label:'npm',val:'Pending',sub:'@botsix/shopify-mcp'},
+  {icon:'🌐',label:'Complementary',val:'ShopReady',sub:'Cross-promote ready'},
+];
+const sd=document.getElementById('stats');
+stats.forEach(s=>{sd.innerHTML+=`<div class="card stat-card"><div class="stat-icon">${s.icon}</div><div class="stat-label">${s.label}</div><div class="stat-val">${s.val}</div><div class="stat-sub">${s.sub}</div></div>`;});
+</script>
+</body>
+</html>
