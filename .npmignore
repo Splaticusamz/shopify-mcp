@@ -1,0 +1,10 @@
+src/
+.env
+.env.*
+!.env.example
+node_modules/
+.github/
+scripts/
+tsconfig.json
+*.ts
+!*.d.ts
